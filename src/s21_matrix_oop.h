@@ -10,6 +10,13 @@
 class S21Matrix {
     friend void calc_minor(double** matrix, int rows, int cols, int i_remove, int j_remove, S21Matrix* minor);
 
+    friend S21Matrix operator + (const S21Matrix& lhs, const S21Matrix& rhs);
+    friend S21Matrix operator - (const S21Matrix& lhs, const S21Matrix& rhs);
+    friend S21Matrix operator * (const S21Matrix& lhs, const S21Matrix& rhs);
+    friend S21Matrix operator * (const S21Matrix& lhs, const double num);
+    friend S21Matrix operator * (const double num, const S21Matrix& rhs);
+    friend bool operator == (const S21Matrix& lhs, const S21Matrix& rhs);
+
     public:
         S21Matrix();
         S21Matrix(int rows, int cols);
@@ -27,6 +34,7 @@ class S21Matrix {
         S21Matrix CalcComplements();
         double Determinant();
         S21Matrix InverseMatrix();
+
 
     private:
         int rows_, cols_;         

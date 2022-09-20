@@ -52,7 +52,7 @@ S21Matrix::~S21Matrix() {
     delete[] matrix_;
 }
 
-bool S21Matrix::EqMatrix(const S21Matrix& other) {
+bool S21Matrix::EqMatrix(const S21Matrix& other) const {
     bool error = SUCCESS;
     if (rows_ != other.rows_ || cols_ != other.cols_) {
         error = FAILURE;
@@ -159,7 +159,6 @@ void calc_minor(double** matrix, int rows, int cols, int i_remove, int j_remove,
     }
 }
 
-
 S21Matrix S21Matrix::CalcComplements() {
     if (rows_ != cols_) {
         throw std::exception();
@@ -205,27 +204,27 @@ double S21Matrix::Determinant() {
 
 }
 
-// S21Matrix S21Matrix::InverseMatrix() {
-//     double det = Determinant();
-//     if (fabs(det) <= 1e-7 ) {
-//         throw std::exception();
-//     }
+S21Matrix S21Matrix::InverseMatrix() {
+    double det = Determinant();
+    if (fabs(det) <= 1e-7 ) {
+        throw std::exception();
+    }
 
-//     S21Matrix complement(rows_, cols_);
-//     complement = CalcComplements();
+    S21Matrix complement(rows_, cols_);
+    complement = CalcComplements();
 
-//     S21Matrix result(cols_, rows_);
-//     result = complement.Transpose();
+    S21Matrix result(cols_, rows_);
+    result = complement.Transpose();
 
-//     for (int i = 0; i < rows_; i++) {
-//         for (int j = 0; j < cols_; j++) {
-//             result.matrix_[i][j] *= (1 / det);   ///  ????
-//         }
-//     }
-//     complement.~S21Matrix();  //  ??
+    for (int i = 0; i < rows_; i++) {
+        for (int j = 0; j < cols_; j++) {
+            result.matrix_[i][j] *= (1 / det);   ///  ????
+        }
+    }
+    complement.~S21Matrix();  //  ??
 
-//     return result;
-// }
+    return result;
+}
 
 
 S21Matrix operator + (const S21Matrix& lhs, const S21Matrix& rhs) {
@@ -298,37 +297,86 @@ S21Matrix operator * (const double num, const S21Matrix& rhs) {
  }
 
 bool operator == (const S21Matrix& lhs, const S21Matrix& rhs) {
-    return lhs->EqMatrix(rhs);
+    return lhs.EqMatrix(rhs);
 }
 
+S21Matrix S21Matrix::operator = (const S21Matrix& rhs) {
+    if (this == &rhs) {
+        return *this;
+    }
+    rows_ = rhs.rows_;
+    cols_ = rhs.cols_;
 
+    matrix_ = new double*[rows_];
 
+    for (int i = 0; i < rows_; i++) {
+        matrix_[i] = new double[cols_];
+    }
+
+    for (int i = 0; i < rows_; i++) {
+        for (int j = 0; j < cols_; j++) {
+            matrix_[i][j] = rhs.matrix_[i][j];
+        }
+    }
+
+    return *this;
+}
+
+S21Matrix S21Matrix::operator += (const S21Matrix& rhs) {
+    this->SumMatrix(rhs);
+    return *this;
+}
+
+S21Matrix S21Matrix::operator -= (const S21Matrix& rhs) {
+    this->SubMatrix(rhs);
+    return *this;
+}
+
+S21Matrix S21Matrix::operator *= (const double num) {
+    this->MulNumber(num);
+    return *this;
+}
+
+S21Matrix S21Matrix::operator *= (const S21Matrix& rhs) {
+    this->MulMatrix(rhs);
+    return *this;
+}
+
+double& S21Matrix::operator () (int i, int j) {
+    if (i >= rows_ || j >= cols_) {
+        throw std::exception();
+    }
+
+    return matrix_[i][j];
+}
 
 int main() {
     const int rows = 10;
     const int cols = 5;
     S21Matrix A(rows, cols);
-    S21Matrix* B = new S21Matrix(rows, cols);
-    S21Matrix* RES = new S21Matrix(rows, cols);
+    S21Matrix B(2, 2);
+    // S21Matrix* B = new S21Matrix(rows, cols);
+    // S21Matrix* RES = new S21Matrix(rows, cols);
 
-    // double k = 0.1;
-    // for (int i = 0; i < rows; i++) {
-    //     for (int j = 0; j < cols; j++) {
-    //         double rand_val = 100 + k;
-    //         A.matrix_[i][j] = rand_val;
-    //         B->matrix_[i][j] = rand_val + 1;
-    //         RES->matrix_[i][j] = 2 * rand_val + 1;
-    //         k += 0.000001;
-    //     }
-    // }
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = 100 + k;
+            A(i, j) = rand_val;
+            // B->matrix_[i][j] = rand_val + 1;
+            // RES->matrix_[i][j] = 2 * rand_val + 1;
+            k += 0.000001;
+        }
+    }
 
-    A.SumMatrix(*B);
+    B = A;
+    A(5, 2) = 15.2;
+    B(5, 2) = 15.2;
 
-    if (A.EqMatrix(*RES)) {
+    if (A.EqMatrix(B)) {
         std::cout << "OK";
     } else {
         std::cout << "Fail";
     }
-
   return 0;
 }

@@ -1,6 +1,6 @@
 #include "s21_matrix_oop.h"
 
-#include <iostream>
+// #include <iostream>
 
 S21Matrix::S21Matrix() {
     rows_ = 10;
@@ -307,6 +307,7 @@ S21Matrix S21Matrix::operator = (const S21Matrix& rhs) {
     cols_ = rhs.cols_;
 
     this->~S21Matrix();
+    
     matrix_ = new double*[rows_];
 
     for (int i = 0; i < rows_; i++) {

@@ -280,6 +280,267 @@ START_TEST(inverse_mat) {
 }
 END_TEST
 
+START_TEST(operator_plus) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+
+    S21Matrix A(rows, cols);
+    S21Matrix B(rows, cols);
+    S21Matrix Check_m(rows, cols);
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            B(i, j) = 2 * rand_val + 0.015;
+            k += 0.000001;
+        }
+    }
+
+    Check_m = A + B;
+    A.SumMatrix(B);
+
+    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_minus) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+
+    S21Matrix A(rows, cols);
+    S21Matrix B(rows, cols);
+    S21Matrix Check_m(rows, cols);
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            B(i, j) = 2 * rand_val + 0.015;
+            k += 0.000001;
+        }
+    }
+
+    Check_m = A - B;
+    A.SubMatrix(B);
+
+    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_mult_matrix) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+    S21Matrix B(cols, rows + 10);
+    S21Matrix Check_m(rows, rows + 10);
+
+
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            k += 0.000001;
+        }
+    }
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows + 10; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            B(i, j) = rand_val + k + 0.32;
+            k += 0.000001;
+        }
+    }
+
+    Check_m = A * B;
+    A.MulMatrix(B);
+
+    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_mult_number_1) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+    S21Matrix Check_m(rows, cols);
+
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            k += 0.000001;
+        }
+    }
+    Check_m = A * 0.345;
+    A.MulNumber(0.345);
+
+    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_mult_number_2) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+    S21Matrix Check_m(rows, cols);
+
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            k += 0.000001;
+        }
+    }
+    Check_m = 0.345 * A;
+    A.MulNumber(0.345);
+
+    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_eq_1) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+
+    S21Matrix A(rows, cols);
+    S21Matrix B(rows, cols);
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            B(i, j) = rand_val;
+            k += 0.000001;
+        }
+    }
+    ck_assert_int_eq(A.EqMatrix(B), A == B);
+}
+END_TEST
+
+START_TEST(operator_eq_2) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+
+    S21Matrix A(rows, cols);
+    S21Matrix B(rows, cols);
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            B(i, j) = 2 * rand_val;
+            k += 0.000001;
+        }
+    }
+    ck_assert_int_eq(A.EqMatrix(B), A == B);
+}
+END_TEST
+
+START_TEST(operator_plus_eq) {
+
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+
+    S21Matrix A(rows, cols);
+    S21Matrix B(rows, cols);
+    S21Matrix Check_m(rows, cols);
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            B(i, j) = 2 * rand_val + 0.015;
+            Check_m(i, j) = 3 * rand_val + 0.015;
+            k += 0.000001;
+        }
+    }
+    S21Matrix Copy_A(A);
+    Copy_A += B;
+    A.SumMatrix(B);
+    ck_assert_int_eq(Copy_A == A, SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_minus_eq) {
+
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+
+    S21Matrix A(rows, cols);
+    S21Matrix B(rows, cols);
+    S21Matrix Check_m(rows, cols);
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            B(i, j) = 2 * rand_val + 0.015;
+            Check_m(i, j) = 3 * rand_val + 0.015;
+            k += 0.000001;
+        }
+    }
+    S21Matrix Copy_A(A);
+    Copy_A -= B;
+    A.SubMatrix(B);
+    ck_assert_int_eq(Copy_A == A, SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_mult_number_eq) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+    S21Matrix Check_m(rows, cols);
+
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            Check_m(i, j) = rand_val * 0.345;
+            k += 0.000001;
+        }
+    }
+    S21Matrix Copy_A(A);
+    Copy_A *= 0.345;
+    A.MulNumber(0.345);
+
+    ck_assert_int_eq(A == Copy_A, SUCCESS);
+}
+END_TEST
+
+START_TEST(operator_mult_matrix_eq) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+    S21Matrix B(cols, rows + 10);
+    S21Matrix Check_m(rows, rows + 10);
+
+    double k = 0.1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            A(i, j) = rand_val;
+            k += 0.000001;
+        }
+    }
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows + 10; j++) {
+            double rand_val = rand_r(&seed) % 2001 - 1000 + k;
+            B(i, j) = rand_val + k + 0.32;
+            k += 0.000001;
+        }
+    }
+
+    S21Matrix Copy_A(A);
+    Copy_A *= B;
+    A.MulMatrix(B);
+    ck_assert_int_eq(A == Copy_A, SUCCESS);
+}
+END_TEST
 
 int main(void) {
     Suite *s1 = suite_create("Test_matrix");
@@ -299,7 +560,17 @@ int main(void) {
     tcase_add_loop_test(tc1, calc_complements_mat, 0, 100);
     tcase_add_loop_test(tc1, determinant_mat, 0, 100);
     tcase_add_loop_test(tc1, inverse_mat, 0, 100);
-
+    tcase_add_loop_test(tc1, operator_plus, 0, 100);
+    tcase_add_loop_test(tc1, operator_minus, 0, 100);
+    tcase_add_loop_test(tc1, operator_mult_matrix, 0, 100);
+    tcase_add_loop_test(tc1, operator_mult_number_1, 0, 100);
+    tcase_add_loop_test(tc1, operator_mult_number_2, 0, 100);
+    tcase_add_loop_test(tc1, operator_eq_1, 0, 100);
+    tcase_add_loop_test(tc1, operator_eq_2, 0, 100);
+    tcase_add_loop_test(tc1, operator_plus_eq, 0, 100);
+    tcase_add_loop_test(tc1, operator_minus_eq, 0, 100);
+    tcase_add_loop_test(tc1, operator_mult_number_eq, 0, 100);
+    tcase_add_loop_test(tc1, operator_mult_matrix_eq, 0, 100);
 
     srunner_set_fork_status(sr, CK_NOFORK);
     srunner_run_all(sr, CK_ENV);

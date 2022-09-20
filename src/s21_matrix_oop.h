@@ -44,8 +44,6 @@ class S21Matrix {
         
         double* operator[](const int i);
         const double* operator[](const int i) const;
-       
-        // double **matrix_;
 
     private:
         int rows_, cols_;         

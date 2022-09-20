@@ -120,6 +120,7 @@ void S21Matrix::MulMatrix(const S21Matrix& other) {
 
     rows_ = result.rows_;
     cols_ = result.cols_;
+    this->~S21Matrix();
     matrix_ = new double*[result.rows_];
     for (int i = 0; i < result.rows_; i++) {
         matrix_[i] = new double[result.cols_];
@@ -173,7 +174,6 @@ S21Matrix S21Matrix::CalcComplements() {
             result.matrix_[i][j] = minor.Determinant() * pow(-1, i + j);
         }
     }
-    minor.~S21Matrix();  //  ???
 
     return result;
 }
@@ -197,7 +197,6 @@ double S21Matrix::Determinant() {
             det += k * matrix_[i][0] * minor.Determinant();
             k *= -1;
         }
-        minor.~S21Matrix();  //  ???
     }
 
     return det;
@@ -221,7 +220,7 @@ S21Matrix S21Matrix::InverseMatrix() {
             result.matrix_[i][j] *= (1 / det);   ///  ????
         }
     }
-    complement.~S21Matrix();  //  ??
+    // complement.~S21Matrix();  //  ??
 
     return result;
 }
@@ -307,6 +306,7 @@ S21Matrix S21Matrix::operator = (const S21Matrix& rhs) {
     rows_ = rhs.rows_;
     cols_ = rhs.cols_;
 
+    this->~S21Matrix();
     matrix_ = new double*[rows_];
 
     for (int i = 0; i < rows_; i++) {
@@ -350,33 +350,33 @@ double& S21Matrix::operator () (int i, int j) {
     return matrix_[i][j];
 }
 
-int main() {
-    const int rows = 10;
-    const int cols = 5;
-    S21Matrix A(rows, cols);
-    S21Matrix B(2, 2);
-    // S21Matrix* B = new S21Matrix(rows, cols);
-    // S21Matrix* RES = new S21Matrix(rows, cols);
+// int main() {
+//     const int rows = 10;
+//     const int cols = 5;
+//     S21Matrix A(rows, cols);
+//     S21Matrix B(2, 2);
+//     // S21Matrix* B = new S21Matrix(rows, cols);
+//     // S21Matrix* RES = new S21Matrix(rows, cols);
 
-    double k = 0.1;
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            double rand_val = 100 + k;
-            A(i, j) = rand_val;
-            // B->matrix_[i][j] = rand_val + 1;
-            // RES->matrix_[i][j] = 2 * rand_val + 1;
-            k += 0.000001;
-        }
-    }
+//     double k = 0.1;
+//     for (int i = 0; i < rows; i++) {
+//         for (int j = 0; j < cols; j++) {
+//             double rand_val = 100 + k;
+//             A(i, j) = rand_val;
+//             // B->matrix_[i][j] = rand_val + 1;
+//             // RES->matrix_[i][j] = 2 * rand_val + 1;
+//             k += 0.000001;
+//         }
+//     }
 
-    B = A;
-    A(5, 2) = 15.2;
-    B(5, 2) = 15.2;
+//     B = A;
+//     A(5, 2) = 15.2;
+//     B(5, 2) = 15.2;
 
-    if (A.EqMatrix(B)) {
-        std::cout << "OK";
-    } else {
-        std::cout << "Fail";
-    }
-  return 0;
-}
+//     if (A.EqMatrix(B)) {
+//         std::cout << "OK";
+//     } else {
+//         std::cout << "Fail";
+//     }
+//   return 0;
+// }

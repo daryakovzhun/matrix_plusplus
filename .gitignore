@@ -56,3 +56,5 @@ dkms.conf
 ._*
 
 *.vscode*
+*a.out
+*a.exe

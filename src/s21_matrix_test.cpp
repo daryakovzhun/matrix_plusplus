@@ -1,6 +1,8 @@
-#include <check.h>
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "s21_matrix_oop.h"
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,9 +12,9 @@
 #include <unistd.h>
 
 unsigned int seed = 0;
+using namespace std;
 
-START_TEST(eq_matrix) {
-
+TEST(TestGroupName, eq_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -27,12 +29,10 @@ START_TEST(eq_matrix) {
             k += 0.000001;
         }
     }
-    ck_assert_int_eq(A.EqMatrix(B), SUCCESS);
+    ASSERT_TRUE(A.EqMatrix(B) == SUCCESS);
 }
-END_TEST
 
-START_TEST(not_eq_matrix) {
-
+TEST(TestGroupName, not_eq_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -47,12 +47,10 @@ START_TEST(not_eq_matrix) {
             k += 0.000001;
         }
     }
-    ck_assert_int_eq(A.EqMatrix(B), FAILURE);
+    ASSERT_TRUE(A.EqMatrix(B) == FAILURE);
 }
-END_TEST
 
-START_TEST(not_rows_eq_matrix) {
-
+TEST(TestGroupName, not_rows_eq_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -71,12 +69,10 @@ START_TEST(not_rows_eq_matrix) {
             B(i, j) = rand_val;
         }
     }
-    ck_assert_int_eq(A.EqMatrix(B), FAILURE);
+    ASSERT_TRUE(A.EqMatrix(B) == FAILURE);
 }
-END_TEST
 
-START_TEST(sum_matrix) {
-
+TEST(TestGroupName, sum_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -94,12 +90,10 @@ START_TEST(sum_matrix) {
         }
     }
     A.SumMatrix(B);
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(sub_matrix) {
-
+TEST(TestGroupName, sub_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -116,12 +110,11 @@ START_TEST(sub_matrix) {
             k += 0.000001;
         }
     }
-    A.SubMatrix(B);
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    A.SubMatrix(B);  
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(mult_number) {
+TEST(TestGroupName, mult_number) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -136,13 +129,11 @@ START_TEST(mult_number) {
             k += 0.000001;
         }
     }
-    A.MulNumber(0.345);
-
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    A.MulNumber(0.345);   
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(mult_matrix) {
+TEST(TestGroupName, mult_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -175,11 +166,10 @@ START_TEST(mult_matrix) {
     }
 
     A.MulMatrix(B);
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(transpose_matrix) {
+TEST(TestGroupName, transpose_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -195,13 +185,11 @@ START_TEST(transpose_matrix) {
             k += 0.000001;
         }
     }
-    A_trans = A.Transpose();
-
-    ck_assert_int_eq(A_trans.EqMatrix(Check_m), SUCCESS);
+    A_trans = A.Transpose();   
+    ASSERT_TRUE(A_trans.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(calc_complements_mat) {
+TEST(TestGroupName, calc_complements_mat) {
     S21Matrix A(3, 3);
     S21Matrix A_calc(3, 3);
     S21Matrix check(3, 3);
@@ -226,13 +214,11 @@ START_TEST(calc_complements_mat) {
     check(2, 1) = -2;
     check(2, 2) = 4;
 
-    A_calc = A.CalcComplements();
-
-    ck_assert_int_eq(A_calc.EqMatrix(check), SUCCESS);
+    A_calc = A.CalcComplements();   
+    ASSERT_TRUE(A_calc.EqMatrix(check) == SUCCESS);
 }
-END_TEST
 
-START_TEST(determinant_mat) {
+TEST(TestGroupName, determinant_mat) {
     S21Matrix A(3, 3);
     A(0, 0) = 1;
     A(0, 1) = 2;
@@ -244,12 +230,11 @@ START_TEST(determinant_mat) {
     A(2, 1) = 2;
     A(2, 2) = 1;
 
-    double result = A.Determinant();
-    ck_assert_int_eq(result, -40);
+    double result = A.Determinant();   
+    ASSERT_TRUE(result == -40);
 }
-END_TEST
 
-START_TEST(inverse_mat) {
+TEST(TestGroupName, inverse_mat) {
     S21Matrix A(3, 3);
     S21Matrix A_inverse(3, 3);
     S21Matrix check(3, 3);
@@ -274,13 +259,11 @@ START_TEST(inverse_mat) {
     check(2, 1) = -0.2;
     check(2, 2) = -0.1;
 
-    A_inverse = A.InverseMatrix();
-
-    ck_assert_int_eq(A_inverse.EqMatrix(check), SUCCESS);
+    A_inverse = A.InverseMatrix();   
+    ASSERT_TRUE(A_inverse.EqMatrix(check) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_plus) {
+TEST(TestGroupName, operator_plus) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -298,13 +281,11 @@ START_TEST(operator_plus) {
     }
 
     Check_m = A + B;
-    A.SumMatrix(B);
-
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    A.SumMatrix(B);    
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_minus) {
+TEST(TestGroupName, operator_minus) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -322,13 +303,11 @@ START_TEST(operator_minus) {
     }
 
     Check_m = A - B;
-    A.SubMatrix(B);
-
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    A.SubMatrix(B);    
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_mult_matrix) {
+TEST(TestGroupName, operator_mult_matrix) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -353,13 +332,11 @@ START_TEST(operator_mult_matrix) {
     }
 
     Check_m = A * B;
-    A.MulMatrix(B);
-
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    A.MulMatrix(B);    
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_mult_number_1) {
+TEST(TestGroupName, operator_mult_number_1) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -375,12 +352,10 @@ START_TEST(operator_mult_number_1) {
     }
     Check_m = A * 0.345;
     A.MulNumber(0.345);
-
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_mult_number_2) {
+TEST(TestGroupName, operator_mult_number_2) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -395,13 +370,11 @@ START_TEST(operator_mult_number_2) {
         }
     }
     Check_m = 0.345 * A;
-    A.MulNumber(0.345);
-
-    ck_assert_int_eq(A.EqMatrix(Check_m), SUCCESS);
+    A.MulNumber(0.345);    
+    ASSERT_TRUE(A.EqMatrix(Check_m) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_eq_1) {
+TEST(TestGroupName, operator_eq_1) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -415,12 +388,11 @@ START_TEST(operator_eq_1) {
             B(i, j) = rand_val;
             k += 0.000001;
         }
-    }
-    ck_assert_int_eq(A.EqMatrix(B), A == B);
+    }   
+    ASSERT_TRUE(A.EqMatrix(B) == (A == B));
 }
-END_TEST
 
-START_TEST(operator_eq_2) {
+TEST(TestGroupName, operator_eq_2) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -434,13 +406,11 @@ START_TEST(operator_eq_2) {
             B(i, j) = 2 * rand_val;
             k += 0.000001;
         }
-    }
-    ck_assert_int_eq(A.EqMatrix(B), A == B);
+    }   
+    ASSERT_TRUE(A.EqMatrix(B) == (A == B));
 }
-END_TEST
 
-START_TEST(operator_plus_eq) {
-
+TEST(TestGroupName, operator_plus_eq) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -459,13 +429,11 @@ START_TEST(operator_plus_eq) {
     }
     S21Matrix Copy_A(A);
     Copy_A += B;
-    A.SumMatrix(B);
-    ck_assert_int_eq(Copy_A == A, SUCCESS);
+    A.SumMatrix(B);   
+    ASSERT_TRUE((Copy_A == A) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_minus_eq) {
-
+TEST(TestGroupName, operator_minus_eq) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
 
@@ -484,12 +452,11 @@ START_TEST(operator_minus_eq) {
     }
     S21Matrix Copy_A(A);
     Copy_A -= B;
-    A.SubMatrix(B);
-    ck_assert_int_eq(Copy_A == A, SUCCESS);
+    A.SubMatrix(B);   
+    ASSERT_TRUE((Copy_A == A) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_mult_number_eq) {
+TEST(TestGroupName, operator_mult_number_eq) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -506,13 +473,11 @@ START_TEST(operator_mult_number_eq) {
     }
     S21Matrix Copy_A(A);
     Copy_A *= 0.345;
-    A.MulNumber(0.345);
-
-    ck_assert_int_eq(A == Copy_A, SUCCESS);
+    A.MulNumber(0.345);   
+    ASSERT_TRUE((A == Copy_A) == SUCCESS);
 }
-END_TEST
 
-START_TEST(operator_mult_matrix_eq) {
+TEST(TestGroupName, operator_mult_matrix_eq) {
     const int rows = rand_r(&seed) % 100 + 1;
     const int cols = rand_r(&seed) % 100 + 1;
     S21Matrix A(rows, cols);
@@ -537,45 +502,14 @@ START_TEST(operator_mult_matrix_eq) {
 
     S21Matrix Copy_A(A);
     Copy_A *= B;
-    A.MulMatrix(B);
-    ck_assert_int_eq(A == Copy_A, SUCCESS);
+    A.MulMatrix(B);    
+    ASSERT_TRUE((A == Copy_A) == SUCCESS);
 }
-END_TEST
 
-int main(void) {
-    Suite *s1 = suite_create("Test_matrix");
-    TCase *tc1 = tcase_create("Test_matrix");
-    SRunner *sr = srunner_create(s1);
-    int nf;
 
-    suite_add_tcase(s1, tc1);
-    tcase_add_loop_test(tc1, eq_matrix, 0, 100);
-    tcase_add_loop_test(tc1, not_eq_matrix, 0, 100);
-    tcase_add_loop_test(tc1, not_rows_eq_matrix, 0, 100);
-    tcase_add_loop_test(tc1, sum_matrix, 0, 100);
-    tcase_add_loop_test(tc1, sub_matrix, 0, 100);
-    tcase_add_loop_test(tc1, mult_number, 0, 100);
-    tcase_add_loop_test(tc1, mult_matrix, 0, 100);
-    tcase_add_loop_test(tc1, transpose_matrix, 0, 100);
-    tcase_add_loop_test(tc1, calc_complements_mat, 0, 100);
-    tcase_add_loop_test(tc1, determinant_mat, 0, 100);
-    tcase_add_loop_test(tc1, inverse_mat, 0, 100);
-    tcase_add_loop_test(tc1, operator_plus, 0, 100);
-    tcase_add_loop_test(tc1, operator_minus, 0, 100);
-    tcase_add_loop_test(tc1, operator_mult_matrix, 0, 100);
-    tcase_add_loop_test(tc1, operator_mult_number_1, 0, 100);
-    tcase_add_loop_test(tc1, operator_mult_number_2, 0, 100);
-    tcase_add_loop_test(tc1, operator_eq_1, 0, 100);
-    tcase_add_loop_test(tc1, operator_eq_2, 0, 100);
-    tcase_add_loop_test(tc1, operator_plus_eq, 0, 100);
-    tcase_add_loop_test(tc1, operator_minus_eq, 0, 100);
-    tcase_add_loop_test(tc1, operator_mult_number_eq, 0, 100);
-    tcase_add_loop_test(tc1, operator_mult_matrix_eq, 0, 100);
+int main(int argc, char **argv)
+{
+  ::testing::InitGoogleTest(&argc, argv);
 
-    srunner_set_fork_status(sr, CK_NOFORK);
-    srunner_run_all(sr, CK_ENV);
-    nf = srunner_ntests_failed(sr);
-    srunner_free(sr);
-
-    return nf == 0 ? 0 : 1;
+  return RUN_ALL_TESTS();
 }

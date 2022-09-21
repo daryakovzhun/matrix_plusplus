@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "s21_matrix_oop.h"
+#include "../s21_matrix_oop.h"
 
 #include <errno.h>
 #include <stdio.h>

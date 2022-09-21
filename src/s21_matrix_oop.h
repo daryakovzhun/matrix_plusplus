@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <exception>
+#include <stdexcept>
 
 #define SUCCESS 1
 #define FAILURE 0

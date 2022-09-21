@@ -1,7 +1,5 @@
 #include "s21_matrix_oop.h"
 
-// #include <iostream>
-
 S21Matrix::S21Matrix() {
     rows_ = 10;
     cols_ = 10;
@@ -29,9 +27,6 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
 
     for (int i = 0; i < rows_; i++) {
         matrix_[i] = new double[cols_];
-    }
-
-    for (int i = 0; i < rows_; i++) {
         for (int j = 0; j < cols_; j++) {
             matrix_[i][j] = other.matrix_[i][j];
         }
@@ -39,17 +34,38 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
 }
 
 S21Matrix::S21Matrix(S21Matrix&& other) {
-    rows_ = other.rows_;
-    cols_ = other.cols_;
-    matrix_ = other.matrix_;
-    other.matrix_ = nullptr;
+    // if ( rows_ == other.rows_ && cols_  == other.cols_) {
+    //     for (int i = 0; i < rows_; i++) {
+    //         for (int j = 0; j < cols_; j++) {
+    //             matrix_[i][j] = other.matrix_[i][j];
+    //         }
+    //     }
+    // } else {
+        this->~S21Matrix();
+        rows_ = other.rows_;
+        cols_ = other.cols_;
+        matrix_ = new double*[rows_];
+
+        for (int i = 0; i < rows_; i++) {
+            matrix_[i] = new double[cols_];
+            for (int j = 0; j < cols_; j++) {
+                matrix_[i][j] = other.matrix_[i][j];
+            }
+        }
+    // }
+
+    delete other.matrix_;
+    other.rows_ = 0;
+    other.cols_ = 0;
 }
 
 S21Matrix::~S21Matrix() {
-    for (int i = 0; i < rows_; i++) {
-        delete[] matrix_[i];
+    if (matrix_) {
+        for (int i = 0; i < rows_; i++) {
+            delete[] matrix_[i];
+        }
+        delete[] matrix_;
     }
-    delete[] matrix_;
 }
 
 int S21Matrix::getRows() {
@@ -61,10 +77,41 @@ int S21Matrix::getCols() {
 }
 
 void S21Matrix::setRows(const int rows) {
-    
-}
-void S21Matrix::setCols(const int cols) {
+    S21Matrix buffer(*this);
+    this->~S21Matrix();
+    matrix_ = new double*[rows];
+    rows_ = rows;
+    cols_ = buffer.cols_;
 
+    for (int i = 0; i < rows; i++) {
+        matrix_[i] = new double[cols_];
+        for (int j = 0; j < cols_; j++) {
+            if (i < buffer.rows_ - 1) {
+                matrix_[i][j] = buffer.matrix_[i][j];
+            } else {
+                matrix_[i][j] = 0;
+            }
+        }
+    }
+}
+
+void S21Matrix::setCols(const int cols) {
+    S21Matrix buffer(*this);
+    this->~S21Matrix();
+    matrix_ = new double*[buffer.rows_];
+    rows_ = buffer.rows_;
+    cols_ = cols;
+
+    for (int i = 0; i < rows_; i++) {
+        matrix_[i] = new double[cols_];
+        for (int j = 0; j < cols_; j++) {
+            if (j < buffer.cols_ - 1) {
+                matrix_[i][j] = buffer.matrix_[i][j];
+            } else {
+                matrix_[i][j] = 0;
+            }
+        }
+    }
 }
 
 bool S21Matrix::EqMatrix(const S21Matrix& other) const {
@@ -87,7 +134,8 @@ bool S21Matrix::EqMatrix(const S21Matrix& other) const {
 
 void S21Matrix::SumMatrix(const S21Matrix& other) {
     if (rows_ != other.rows_ || cols_ != other.cols_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     for (int i = 0; i < rows_; i++) {
@@ -99,7 +147,8 @@ void S21Matrix::SumMatrix(const S21Matrix& other) {
 
 void S21Matrix::SubMatrix(const S21Matrix& other) {
     if (rows_ != other.rows_ || cols_ != other.cols_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     for (int i = 0; i < rows_; i++) {
@@ -119,7 +168,8 @@ void S21Matrix::MulNumber(const double num) {
 
 void S21Matrix::MulMatrix(const S21Matrix& other) {
     if (cols_ != other.rows_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     S21Matrix result(rows_, other.cols_);
@@ -175,7 +225,8 @@ void calc_minor(double** matrix, int rows, int cols, int i_remove, int j_remove,
 
 S21Matrix S21Matrix::CalcComplements() {
     if (rows_ != cols_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     S21Matrix result(rows_, cols_);
@@ -193,7 +244,8 @@ S21Matrix S21Matrix::CalcComplements() {
 
 double S21Matrix::Determinant() {
     if (rows_ != cols_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     double det = 0;
@@ -219,7 +271,8 @@ double S21Matrix::Determinant() {
 S21Matrix S21Matrix::InverseMatrix() {
     double det = Determinant();
     if (fabs(det) <= 1e-7 ) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     S21Matrix complement(rows_, cols_);
@@ -239,7 +292,8 @@ S21Matrix S21Matrix::InverseMatrix() {
 
 S21Matrix operator + (const S21Matrix& lhs, const S21Matrix& rhs) {
     if (lhs.rows_ != rhs.rows_ || lhs.cols_ != rhs.cols_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     S21Matrix result(lhs.rows_, lhs.cols_);
@@ -254,7 +308,8 @@ S21Matrix operator + (const S21Matrix& lhs, const S21Matrix& rhs) {
 
 S21Matrix operator - (const S21Matrix& lhs, const S21Matrix& rhs) {
     if (lhs.rows_ != rhs.rows_ || lhs.cols_ != rhs.cols_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     S21Matrix result(lhs.rows_, lhs.cols_);
@@ -269,7 +324,8 @@ S21Matrix operator - (const S21Matrix& lhs, const S21Matrix& rhs) {
 
 S21Matrix operator * (const S21Matrix& lhs, const S21Matrix& rhs) {
     if (lhs.cols_ != rhs.rows_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     S21Matrix result(lhs.rows_, rhs.cols_);
@@ -356,39 +412,9 @@ S21Matrix S21Matrix::operator *= (const S21Matrix& rhs) {
 
 double& S21Matrix::operator () (int i, int j) {
     if (i >= rows_ || j >= cols_) {
-        throw std::exception();
+        throw std::out_of_range(
+            "Incorrect input, matrices should have the same size");
     }
 
     return matrix_[i][j];
 }
-
-// int main() {
-//     const int rows = 10;
-//     const int cols = 5;
-//     S21Matrix A(rows, cols);
-//     S21Matrix B(2, 2);
-//     // S21Matrix* B = new S21Matrix(rows, cols);
-//     // S21Matrix* RES = new S21Matrix(rows, cols);
-
-//     double k = 0.1;
-//     for (int i = 0; i < rows; i++) {
-//         for (int j = 0; j < cols; j++) {
-//             double rand_val = 100 + k;
-//             A(i, j) = rand_val;
-//             // B->matrix_[i][j] = rand_val + 1;
-//             // RES->matrix_[i][j] = 2 * rand_val + 1;
-//             k += 0.000001;
-//         }
-//     }
-
-//     B = A;
-//     A(5, 2) = 15.2;
-//     B(5, 2) = 15.2;
-
-//     if (A.EqMatrix(B)) {
-//         std::cout << "OK";
-//     } else {
-//         std::cout << "Fail";
-//     }
-//   return 0;
-// }

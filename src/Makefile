@@ -20,7 +20,7 @@ objs_test/%.o: %.cpp
 	@mkdir -p $(OBJTESTDIR)
 	$(CC) -o $@ -c $< $(ALL_FLAGS)
 
-all: s21_matrix_oop.a test gcov_report
+all: s21_matrix_oop.a
 
 test: $(ALL) 
 	$(CC) $(ALL) -o $(NAME) $(ALL_FLAGS)

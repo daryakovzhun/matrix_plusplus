@@ -34,25 +34,17 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
 }
 
 S21Matrix::S21Matrix(S21Matrix&& other) {
-    // if ( rows_ == other.rows_ && cols_  == other.cols_) {
-    //     for (int i = 0; i < rows_; i++) {
-    //         for (int j = 0; j < cols_; j++) {
-    //             matrix_[i][j] = other.matrix_[i][j];
-    //         }
-    //     }
-    // } else {
-        this->~S21Matrix();
-        rows_ = other.rows_;
-        cols_ = other.cols_;
-        matrix_ = new double*[rows_];
+    this->~S21Matrix();
+    rows_ = other.rows_;
+    cols_ = other.cols_;
+    matrix_ = new double*[rows_];
 
-        for (int i = 0; i < rows_; i++) {
-            matrix_[i] = new double[cols_];
-            for (int j = 0; j < cols_; j++) {
-                matrix_[i][j] = other.matrix_[i][j];
-            }
+    for (int i = 0; i < rows_; i++) {
+        matrix_[i] = new double[cols_];
+        for (int j = 0; j < cols_; j++) {
+            matrix_[i][j] = other.matrix_[i][j];
         }
-    // }
+    }
 
     delete other.matrix_;
     other.rows_ = 0;

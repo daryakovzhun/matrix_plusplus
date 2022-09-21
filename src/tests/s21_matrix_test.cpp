@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "../s21_matrix_oop.h"
+#include "../source/s21_matrix_oop.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -506,6 +506,39 @@ TEST(TestGroupName, operator_mult_matrix_eq) {
     ASSERT_TRUE((A == Copy_A) == SUCCESS);
 }
 
+TEST(TestGroupName, get_rows) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+  
+    ASSERT_TRUE(rows == A.getRows());
+}
+
+TEST(TestGroupName, get_cols) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+  
+    ASSERT_TRUE(cols == A.getCols());
+}
+
+TEST(TestGroupName, set_rows) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+    A.setRows(rows + 10);
+  
+    ASSERT_TRUE(rows + 10 == A.getRows());
+}
+
+TEST(TestGroupName, set_cols) {
+    const int rows = rand_r(&seed) % 100 + 1;
+    const int cols = rand_r(&seed) % 100 + 1;
+    S21Matrix A(rows, cols);
+    A.setCols(cols + 10);
+  
+    ASSERT_TRUE(cols + 10 == A.getCols());
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
